@@ -1,0 +1,7 @@
+CREATE TABLE test (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+INSERT INTO test (name)
+VALUES ('Sample Data');

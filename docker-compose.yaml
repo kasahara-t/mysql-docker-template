@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  db:
+    build: 
+      context: ./docker/mysql
+    container_name: ${CONTAINER_PREFIX}-db
+    volumes:
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - rdb-store:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE=$MYSQL_DB
+      - MYSQL_USER=$MYSQL_USER
+      - MYSQL_PASSWORD=$MYSQL_PASSWORD
+      - TZ=$MYSQL_TIMEZONE
+    healthcheck:
+      test: mysqladmin ping -h localhost
+      interval: 2s
+      timeout: 5s
+      retries: 100
+    ports:
+      - ${MYSQL_PORT}:3306
+    networks:
+      - phpmyadmin-network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: ${CONTAINER_PREFIX}-phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: $MYSQL_ROOT_PASSWORD
+      UPLOAD_LIMIT: 50M
+    healthcheck:
+      test: curl -f http://localhost || exit 1
+      interval: 2s
+      timeout: 5s
+      retries: 100
+      start_period: 10s
+    ports:
+      - ${PHPMYADMIN_PORT}:80
+    networks:
+      - phpmyadmin-network
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  rdb-store:
+      
+networks:
+  phpmyadmin-network:
