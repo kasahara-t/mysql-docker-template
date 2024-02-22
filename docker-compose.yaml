@@ -6,12 +6,13 @@ services:
       context: ./docker/mysql
     container_name: mysql
     environment:
-      MYSQL_DATABASE: template
       TZ: Asia/Tokyo
+      MYSQL_DATABASE_FILE: /run/secrets/mysql_database
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
       MYSQL_USER_FILE: /run/secrets/mysql_user
       MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
     secrets:
+      - mysql_database
       - mysql_root_password
       - mysql_user
       - mysql_password
@@ -46,12 +47,14 @@ services:
         condition: service_healthy
 
 secrets:
+  mysql_database:
+    file: ./docker/mysql/secrets/database.txt
   mysql_root_password:
-    file: ./docker/mysql/secrets/mysql_root_password.txt
+    file: ./docker/mysql/secrets/root_password.txt
   mysql_user:
-    file: ./docker/mysql/secrets/mysql_user.txt
+    file: ./docker/mysql/secrets/user.txt
   mysql_password:
-    file: ./docker/mysql/secrets/mysql_password.txt
+    file: ./docker/mysql/secrets/password.txt
 
 volumes:
   mysql-store:
