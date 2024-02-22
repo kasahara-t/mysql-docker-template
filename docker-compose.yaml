@@ -6,7 +6,6 @@ services:
       context: ./docker/mysql
     container_name: mysql
     environment:
-      TZ: Asia/Tokyo
       MYSQL_DATABASE_FILE: /run/secrets/mysql_database
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
       MYSQL_USER_FILE: /run/secrets/mysql_user
