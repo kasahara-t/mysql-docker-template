@@ -3,7 +3,7 @@ SECRETS_DIR := $(ROOT_DIR)/docker/mysql/secrets
 DEFAULT_DB_NAME := default_database
 DEFAULT_USER_NAME := default_user
 
-.PHONY: database.txt user.txt root_password.txt password.txt init
+.PHONY: database.txt user.txt root_password.txt password.txt init-database install-tools init
 
 database.txt:
 	@echo "Creating database.txt"; \
@@ -33,5 +33,17 @@ password.txt:
 	password=$${password:-$$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13)}; \
 	echo "$$password" > $(SECRETS_DIR)/password.txt
 
-init: database.txt user.txt root_password.txt password.txt
+install-tools:
+	@while read line; do \
+		lang=$$(echo $$line | cut -d ' ' -f1); \
+		version=$$(echo $$line | cut -d ' ' -f2); \
+		asdf plugin add $$lang || true; \
+		asdf install $$lang $$version; \
+		asdf local $$lang $$version; \
+	done < .tool-versions
+
+init-database: database.txt user.txt root_password.txt password.txt
+	@echo "Initialization of database settings complete."
+
+init: install-tools init-database
 	@echo "Initialization complete."
