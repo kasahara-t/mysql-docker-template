@@ -1,7 +1,7 @@
 ROOT_DIR := $(shell git rev-parse --show-toplevel)
 SECRETS_DIR := $(ROOT_DIR)/docker/mysql/secrets
-DEFAULT_DB_NAME := default_database
-DEFAULT_USER_NAME := default_user
+DEFAULT_DB_NAME := mysql_docker_template
+DEFAULT_USER_NAME := mysql_docker_template_user
 
 generate_random_string = head /dev/urandom | tr -dc A-Za-z0-9 | head -c $(1)
 
@@ -32,3 +32,13 @@ $(SECRETS_DIR)/password.txt:
 .PHONY: init-database
 init-database: $(SECRETS_DIR)/database.txt $(SECRETS_DIR)/user.txt $(SECRETS_DIR)/root_password.txt $(SECRETS_DIR)/password.txt
 	@echo "Initialization of database settings complete."
+
+.env:
+	@if [ ! -f $(ROOT_DIR)/.env ]; then \
+		echo "Creating root .env from template"; \
+		cp $(ROOT_DIR)/.env.template $(ROOT_DIR)/.env; \
+	fi
+
+.PHONY: init
+init: .env init-database
+	@echo "Initialization complete."
