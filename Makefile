@@ -1,5 +1,5 @@
 ROOT_DIR := $(shell git rev-parse --show-toplevel)
-SECRETS_DIR := $(ROOT_DIR)/docker/mysql/secrets
+SECRETS_DIR := $(ROOT_DIR)/.docker/mysql/secrets
 DEFAULT_DB_NAME := mysql_docker_template
 DEFAULT_USER_NAME := mysql_docker_template_user
 

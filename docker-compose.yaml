@@ -3,7 +3,7 @@ version: "3.9"
 services:
   mysql:
     build: 
-      context: ./docker/mysql
+      context: ./.docker/mysql
     container_name: ${CONTAINER_PREFIX}-mysql
     environment:
       MYSQL_DATABASE_FILE: /run/secrets/mysql_database
@@ -21,7 +21,7 @@ services:
       test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root --password=`cat /run/secrets/mysql_root_password` | grep 'mysqld is alive'"]
       interval: 5s
       retries: 5
-      start_period: 10s
+      start_period: 20s
     volumes:
       - mysql-store:/var/lib/mysql
     networks:
@@ -30,7 +30,7 @@ services:
 
   migrator:
     build:
-      context: ./docker/migrator
+      context: ./.docker/migrator
     container_name: ${CONTAINER_PREFIX}-migrator
     environment:
       MYSQL_HOST: mysql
@@ -69,13 +69,13 @@ services:
 
 secrets:
   mysql_database:
-    file: ./docker/mysql/secrets/database.txt
+    file: ./.docker/mysql/secrets/database.txt
   mysql_root_password:
-    file: ./docker/mysql/secrets/root_password.txt
+    file: ./.docker/mysql/secrets/root_password.txt
   mysql_user:
-    file: ./docker/mysql/secrets/user.txt
+    file: ./.docker/mysql/secrets/user.txt
   mysql_password:
-    file: ./docker/mysql/secrets/password.txt
+    file: ./.docker/mysql/secrets/password.txt
 
 volumes:
   mysql-store:
