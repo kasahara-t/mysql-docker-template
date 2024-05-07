@@ -8,9 +8,22 @@ MAKEFLAGS += --no-builtin-rules
 .SUFFIXES:
 
 # デフォルトターゲット
-.PHONY: all
-all: init
-	@echo "All done."
+.PHONY: start
+start: init
+	docker-compose up -d
+
+.PHONY: stop
+stop:
+	docker-compose down
+
+.PHONY: rebuild
+rebuild: init
+	docker-compose down
+	docker-compose up --build -d
+
+.PHONY: clean-app
+clean-app:
+	docker compose down --rmi all --remove-orphans --volumes"
 
 # ヘルパー関数の定義
 # ランダムな文字列を生成する
@@ -75,5 +88,5 @@ init: init-database init-project
 	@echo "Initialization complete."
 
 .PHONY: clean
-clean: clean-database clean-project
+clean: clean-app clean-database clean-project
 	@echo "Clean complete."
