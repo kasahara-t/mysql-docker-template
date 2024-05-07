@@ -1,20 +1,18 @@
-FROM golang:1.22
+# https://hub.docker.com/_/golang
+FROM golang:1.22-alpine
 
 WORKDIR /app
-
-# MySQLクライアントのインストール
-RUN apt update
-RUN apt install -y default-mysql-client
 
 # マイグレーションツールのインストール
 RUN go install -tags 'mysql' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
 # マイグレーションファイルのコピー
 COPY ./histories /app/histories
-
 # マイグレーションスクリプトのコピー
 COPY ./migrate.sh /app/migrate.sh
+RUN chmod +x /app/migrate.sh
 
-EXPOSE 3306
+RUN adduser -D nonrootuser
+USER nonrootuser
 
 CMD ["sh", "migrate.sh"]
