@@ -23,7 +23,7 @@ rebuild: init
 
 .PHONY: clean-app
 clean-app:
-	docker compose down --rmi all --remove-orphans --volumes"
+	docker compose down --rmi all --remove-orphans --volumes
 
 # ヘルパー関数の定義
 # ランダムな文字列を生成する
