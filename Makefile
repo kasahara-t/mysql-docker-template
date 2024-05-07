@@ -3,11 +3,11 @@ SECRETS_DIR := $(ROOT_DIR)/.docker/mysql/secrets
 DEFAULT_DB_NAME := mysql_docker_template
 DEFAULT_USER_NAME := mysql_docker_template_user
 
-# ビルトインルールを無効にする
+# Disable built-in rules
 MAKEFLAGS += --no-builtin-rules
 .SUFFIXES:
 
-# デフォルトターゲット
+# Default target
 .PHONY: start
 start: init
 	docker-compose up -d
@@ -25,11 +25,11 @@ rebuild: init
 clean-app:
 	docker compose down --rmi all --remove-orphans --volumes
 
-# ヘルパー関数の定義
-# ランダムな文字列を生成する
+# Define helper functions
+# Generate a random string
 generate_random_string = head /dev/urandom | tr -dc A-Za-z0-9 | head -c $(1)
 
-# ファイルが存在しない場合に値を入力してファイルを作成する
+# Prompt for a value and create a file if it does not exist
 define prompt_for_value
 @if [ ! -f $(1) ]; then \
 	read -p $(2) input; \
@@ -41,7 +41,7 @@ else \
 fi
 endef
 
-# データベースの設定
+# Database configuration
 $(SECRETS_DIR)/database.txt:
 	$(call prompt_for_value,$@,"Enter the database name (Press enter for default: $(DEFAULT_DB_NAME)):",$(DEFAULT_DB_NAME))
 
@@ -65,7 +65,7 @@ clean-database:
 	rm -f $(SECRETS_DIR)/root_password.txt
 	rm -f $(SECRETS_DIR)/password.txt
 
-# プロジェクトの設定
+# Project setup
 .env:
 	@if [ ! -f $(ROOT_DIR)/.env ]; then \
 		echo "Creating root .env from template"; \
@@ -82,7 +82,6 @@ init-project: .env
 clean-project:
 	rm -f $(ROOT_DIR)/.env
 
-# ターゲットの定義
 .PHONY: init
 init: init-database init-project
 	@echo "Initialization complete."
