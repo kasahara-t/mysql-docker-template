@@ -67,7 +67,7 @@ services:
           
 configs:
   mysql_config:
-    file: ./.docker/mysql/config/my.cnf
+    file: ./.docker/mysql/conf.d/my.cnf
 
 secrets:
   mysql_database:
